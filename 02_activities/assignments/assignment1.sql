@@ -83,6 +83,9 @@ order by v.vendor_name, vb.market_date
 -- AGGREGATE
 /* 1. Write a query that determines how many times each vendor has rented a booth 
 at the farmer’s market by counting the vendor booth assignments per vendor_id. */
+select vendor_id, count(market_date) no_of_both_rented
+from vendor_booth_assignments
+group by vendor_id
 
 
 
@@ -91,12 +94,19 @@ sticker to everyone who has ever spent more than $2000 at the market. Write a qu
 of customers for them to give stickers to, sorted by last name, then first name. 
 
 HINT: This query requires you to join two tables, use an aggregate function, and use the HAVING keyword. */
-
+select c.customer_first_name, c.customer_last_name, round(sum(cp.cost_to_customer_per_qty * cp.quantity),2) money_spent
+from customer c inner join customer_purchases cp
+on c.customer_id = cp.customer_id
+group by c.customer_first_name, c.customer_last_name
+having sum(cp.cost_to_customer_per_qty * cp.quantity) > 2000
+order by c.customer_last_name, c.customer_first_name;
 
 
 --Temp Table
 /* 1. Insert the original vendor table into a temp.new_vendor and then add a 10th vendor: 
 Thomass Superfood Store, a Fresh Focused store, owned by Thomas Rosenthal
+
+
 
 HINT: This is two total queries -- first create the table from the original, then insert the new 10th vendor. 
 When inserting the new vendor, you need to appropriately align the columns to be inserted 
@@ -106,6 +116,19 @@ When inserting the new vendor, you need to appropriately align the columns to be
 VALUES(col1,col2,col3,col4,col5) 
 */
 
+DROP TABLE IF EXISTS temp.new_vendor;
+
+--make the TABLE
+CREATE TABLE temp.new_vendor AS
+
+-- definition of the TABLE
+SELECT * 
+FROM vendor;
+
+--select * from new_vendor
+
+insert INTO new_vendor
+VALUES(10,'Thomass Superfood Store','Fresh Focused','Thomas','Rosenthal')
 
 
 -- Date
